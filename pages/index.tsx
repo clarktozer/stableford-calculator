@@ -1,27 +1,30 @@
+import { Container, Grid, TextField } from "@material-ui/core";
 import React from "react";
+import { useStyles } from "./styles";
 
 export default function Home() {
+    const classes = useStyles();
+
     return (
-        <section>
-            <div>
-                Test Stableford (H: 9, S: 3, P: 4, S: 4):{" "}
-                <b>{getStableford(9, 3, 4, 4)}</b>
-            </div>
-            <div>
-                Test Stableford (H: 19, S: 1, P: 4, S: 4):{" "}
-                <b>{getStableford(19, 1, 4, 4)}</b>
-            </div>
-        </section>
+        <Container fixed>
+            <Grid container spacing={3}>
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        className={classes.field}
+                        type="number"
+                        variant="outlined"
+                        size="small"
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        className={classes.field}
+                        type="number"
+                        variant="outlined"
+                        size="small"
+                    />
+                </Grid>
+            </Grid>
+        </Container>
     );
 }
-
-export const getStableford = (
-    handicap: number,
-    stroke: number,
-    par: number,
-    score: number
-) => {
-    const differential = handicap % 18 >= stroke ? 1 : 0;
-    const points = par + 2 - score + differential + handicap / 18;
-    return points < 0 ? 0 : Math.floor(points);
-};
