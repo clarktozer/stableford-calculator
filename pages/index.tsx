@@ -1,24 +1,17 @@
-import Head from "next/head";
 import React from "react";
-import { Layout, siteTitle } from "../components/layout";
 
 export default function Home() {
     return (
-        <Layout>
-            <Head>
-                <title>{siteTitle}</title>
-            </Head>
-            <section>
-                <div>
-                    Test Stableford (H: 9, S: 3, P: 4, S: 4):{" "}
-                    <b>{getStableford(9, 3, 4, 4)}</b>
-                </div>
-                <div>
-                    Test Stableford (H: 19, S: 1, P: 4, S: 4):{" "}
-                    <b>{getStableford(19, 1, 4, 4)}</b>
-                </div>
-            </section>
-        </Layout>
+        <section>
+            <div>
+                Test Stableford (H: 9, S: 3, P: 4, S: 4):{" "}
+                <b>{getStableford(9, 3, 4, 4)}</b>
+            </div>
+            <div>
+                Test Stableford (H: 19, S: 1, P: 4, S: 4):{" "}
+                <b>{getStableford(19, 1, 4, 4)}</b>
+            </div>
+        </section>
     );
 }
 
