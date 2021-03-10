@@ -7,7 +7,7 @@ import {
     Typography
 } from "@material-ui/core";
 import React, { FC } from "react";
-import { useStyles } from "./styles";
+import { useStyles } from "./style";
 import { HeaderProps } from "./types";
 
 export const Header: FC<HeaderProps> = ({ onToggleTheme, isDarkTheme }) => {
@@ -16,13 +16,7 @@ export const Header: FC<HeaderProps> = ({ onToggleTheme, isDarkTheme }) => {
     return (
         <AppBar position="sticky" color="inherit" variant="outlined">
             <Toolbar>
-                <IconButton
-                    className={classes.siteIcon}
-                    edge="start"
-                    color="inherit"
-                >
-                    <Icon>golf_course</Icon>
-                </IconButton>
+                <Icon className={classes.siteIcon}>golf_course</Icon>
                 <Typography className={classes.heading}>
                     Stableford Calculator
                 </Typography>

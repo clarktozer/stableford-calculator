@@ -1,4 +1,4 @@
-export const getStableford = (
+export const getStablefordPoints = (
     handicap: number,
     stroke: number,
     par: number,

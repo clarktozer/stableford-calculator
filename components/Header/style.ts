@@ -5,7 +5,7 @@ export const useStyles = makeStyles(theme => ({
         flexGrow: 1
     },
     siteIcon: {
-        marginRight: theme.spacing(1)
+        marginRight: theme.spacing(2)
     },
     theme: {
         display: "flex"
