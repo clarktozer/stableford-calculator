@@ -2,6 +2,7 @@ import {
     AppBar,
     Icon,
     IconButton,
+    NoSsr,
     Toolbar,
     Tooltip,
     Typography
@@ -22,15 +23,17 @@ export const Header: FC<HeaderProps> = ({ onToggleTheme, isDarkTheme }) => {
                 </Typography>
                 <div className={classes.grow} />
                 <div className={classes.theme}>
-                    <Tooltip title="Toggle light/dark theme">
-                        <IconButton color="inherit" onClick={onToggleTheme}>
-                            {isDarkTheme ? (
-                                <Icon>brightness_high</Icon>
-                            ) : (
-                                <Icon>brightness_4</Icon>
-                            )}
-                        </IconButton>
-                    </Tooltip>
+                    <NoSsr>
+                        <Tooltip title="Toggle light/dark theme">
+                            <IconButton color="inherit" onClick={onToggleTheme}>
+                                {isDarkTheme ? (
+                                    <Icon>brightness_high</Icon>
+                                ) : (
+                                    <Icon>brightness_4</Icon>
+                                )}
+                            </IconButton>
+                        </Tooltip>
+                    </NoSsr>
                 </div>
             </Toolbar>
         </AppBar>

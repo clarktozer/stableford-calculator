@@ -1,30 +1,40 @@
-import {
-    Chip,
-    Container,
-    Grid,
-    TextField,
-    Typography
-} from "@material-ui/core";
-import classnames from "classnames";
+import { Container, Grid, TextField, Typography } from "@material-ui/core";
 import React, { useState } from "react";
-import { HoleInput } from "../components/HoleInput";
-import { TotalPoints } from "../components/TotalPoints";
-import { back9, front9 } from "../constants";
+import { HoleInput, TotalPoints } from "../components";
+import { BackNine, FrontNine, PointsState } from "../constants";
 import { useStyles } from "./style";
 
 export default function Home() {
-    const [totalPoints, setTotalPoints] = useState(0);
-    const [handicap, setHandicap] = useState("36");
+    const [totalPoints, setTotalPoints] = useState(PointsState);
+    const [handicap, setHandicap] = useState(36);
+    const halfway = Math.floor(totalPoints.length / 2);
     const classes = useStyles();
 
     const onChangeHandicap = (
         event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
     ) => {
-        setHandicap(event.target.value);
+        const value = parseInt(event.target.value);
+
+        if (!isNaN(value)) {
+            setHandicap(value);
+        }
+    };
+
+    const onHoleChanged = (hole: number, points: number) => {
+        if (hole > 0) {
+            const newTotal = totalPoints.map((item, index) => {
+                if (index === hole - 1) {
+                    return points;
+                }
+                return item;
+            });
+
+            setTotalPoints(newTotal);
+        }
     };
 
     return (
-        <Container fixed className={classes.container}>
+        <Container maxWidth="lg" className={classes.container}>
             <Grid container spacing={3}>
                 <Grid item xs={12}>
                     <div className={classes.toolbar}>
@@ -41,31 +51,40 @@ export default function Home() {
                             onChange={onChangeHandicap}
                         />
                         <div className={classes.grow}></div>
-                        <TotalPoints value={totalPoints} />
+                        <TotalPoints
+                            label="Total Points"
+                            value={totalPoints.reduce(
+                                (total, points) => total + points,
+                                0
+                            )}
+                        />
                     </div>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     <Typography className={classes.sectionTitle}>
                         Front 9
                     </Typography>
-                    {front9.map(hole => (
-                        <HoleInput key={hole} hole={hole} handicap={handicap} />
+                    {FrontNine.map(hole => (
+                        <HoleInput
+                            key={hole}
+                            hole={hole}
+                            handicap={handicap}
+                            onChange={onHoleChanged}
+                        />
                     ))}
                     <div className={classes.totalRow}>
-                        <Chip
-                            className={classnames(
-                                classes.totalScore,
-                                classes.total
+                        <TotalPoints
+                            label="In"
+                            value={totalPoints.reduce(
+                                (total, points, index) => {
+                                    if (index < halfway) {
+                                        return total + points;
+                                    }
+
+                                    return total;
+                                },
+                                0
                             )}
-                            size="small"
-                            color="primary"
-                            label={0}
-                        />
-                        <Chip
-                            className={classes.total}
-                            size="small"
-                            color="primary"
-                            label={0}
                         />
                     </div>
                 </Grid>
@@ -73,24 +92,27 @@ export default function Home() {
                     <Typography className={classes.sectionTitle}>
                         Back 9
                     </Typography>
-                    {back9.map(hole => (
-                        <HoleInput key={hole} hole={hole} handicap={handicap} />
+                    {BackNine.map(hole => (
+                        <HoleInput
+                            key={hole}
+                            hole={hole}
+                            handicap={handicap}
+                            onChange={onHoleChanged}
+                        />
                     ))}
                     <div className={classes.totalRow}>
-                        <Chip
-                            className={classnames(
-                                classes.totalScore,
-                                classes.total
+                        <TotalPoints
+                            label="Out"
+                            value={totalPoints.reduce(
+                                (total, points, index) => {
+                                    if (index >= halfway) {
+                                        return total + points;
+                                    }
+
+                                    return total;
+                                },
+                                0
                             )}
-                            size="small"
-                            color="primary"
-                            label={0}
-                        />
-                        <Chip
-                            className={classes.total}
-                            size="small"
-                            color="primary"
-                            label={0}
                         />
                     </div>
                 </Grid>

@@ -1,20 +1,47 @@
 import { Chip, TextField } from "@material-ui/core";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
+import { getStablefordPoints } from "../../utils";
 import { useStyles } from "./style";
-import { HoleInputProps } from "./types";
+import { HoleDefinition, HoleInputProps } from "./types";
 
-export const HoleInput: FC<HoleInputProps> = ({ hole, handicap }) => {
-    const [par, setPar] = useState("");
-    const [stroke, setStroke] = useState("");
-    const [score, setScore] = useState("");
-    const [points, setPoints] = useState("");
+export const HoleInput: FC<HoleInputProps> = ({ onChange, hole, handicap }) => {
+    const [points, setPoints] = useState(0);
+    const [input, setInput] = useState<HoleDefinition>({
+        par: "",
+        score: "",
+        stroke: ""
+    });
     const classes = useStyles();
 
-    const onChangePar = (
+    const onChangeInput = (
         event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
     ) => {
-        setPar(event.target.value);
+        const type = event.target.getAttribute("data-type");
+
+        if (type) {
+            setInput(prev => ({
+                ...prev,
+                [type]: event.target.value
+            }));
+        }
     };
+
+    useEffect(() => {
+        const { stroke, score, par } = input;
+        let value = 0;
+
+        if (Number(stroke) && Number(score) && Number(par)) {
+            value = getStablefordPoints(
+                handicap,
+                Number(stroke),
+                Number(par),
+                Number(score)
+            );
+        }
+
+        setPoints(value);
+        onChange(hole, value);
+    }, [input, hole, handicap, setPoints]);
 
     return (
         <div className={classes.holeInput}>
@@ -27,15 +54,16 @@ export const HoleInput: FC<HoleInputProps> = ({ hole, handicap }) => {
                 label="Par"
                 InputProps={{
                     inputProps: {
-                        min: 3,
-                        max: 6
+                        min: 1,
+                        max: 10,
+                        ["data-type"]: "par"
                     }
                 }}
                 InputLabelProps={{
                     shrink: true
                 }}
-                value={par}
-                onChange={onChangePar}
+                value={input.par}
+                onChange={onChangeInput}
             />
             <TextField
                 className={classes.field}
@@ -46,13 +74,15 @@ export const HoleInput: FC<HoleInputProps> = ({ hole, handicap }) => {
                 InputProps={{
                     inputProps: {
                         min: 1,
-                        max: 18
+                        max: 18,
+                        ["data-type"]: "stroke"
                     }
                 }}
                 InputLabelProps={{
                     shrink: true
                 }}
-                value={stroke}
+                value={input.stroke}
+                onChange={onChangeInput}
             />
             <TextField
                 className={classes.field}
@@ -62,14 +92,16 @@ export const HoleInput: FC<HoleInputProps> = ({ hole, handicap }) => {
                 label="Score"
                 InputProps={{
                     inputProps: {
-                        min: 0,
-                        max: 100
+                        min: 1,
+                        max: 100,
+                        ["data-type"]: "score"
                     }
                 }}
                 InputLabelProps={{
                     shrink: true
                 }}
-                value={score}
+                value={input.score}
+                onChange={onChangeInput}
             />
             <Chip
                 size="small"

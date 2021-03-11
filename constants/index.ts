@@ -5,6 +5,8 @@ export enum ThemeType {
 
 export const ThemeCookie = "sctheme";
 
-export const front9 = Array.from({ length: 9 }, (_, i) => i + 1);
+export const FrontNine = Array.from({ length: 9 }, (_, i) => i + 1);
 
-export const back9 = Array.from({ length: 9 }, (_, i) => i + 10);
+export const BackNine = Array.from({ length: 9 }, (_, i) => i + 10);
+
+export const PointsState = Array.from({ length: 18 }, () => 0);

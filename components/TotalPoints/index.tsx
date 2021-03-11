@@ -3,12 +3,12 @@ import React, { FC } from "react";
 import { useStyles } from "./style";
 import { TotalPointsProps } from "./types";
 
-export const TotalPoints: FC<TotalPointsProps> = ({ value }) => {
+export const TotalPoints: FC<TotalPointsProps> = ({ value, label }) => {
     const classes = useStyles();
 
     return (
         <Chip
-            label="Total Points"
+            label={label}
             className={classes.root}
             avatar={
                 <Chip

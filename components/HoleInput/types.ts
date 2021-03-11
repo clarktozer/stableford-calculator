@@ -1,4 +1,11 @@
 export interface HoleInputProps {
+    handicap: number;
     hole: number;
-    handicap: string;
+    onChange: (hole: number, points: number) => void;
+}
+
+export interface HoleDefinition {
+    par: string;
+    stroke: string;
+    score: string;
 }
