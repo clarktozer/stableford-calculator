@@ -1,5 +1,5 @@
 import { CssBaseline } from "@material-ui/core";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import { ThemeProvider } from "@material-ui/core/styles";
 import { AppProps } from "next/app";
 import Head from "next/head";
 import React, { useEffect, useMemo } from "react";
@@ -7,11 +7,13 @@ import { useCookie } from "react-use";
 import { Header } from "../components/Header";
 import { ThemeCookie, ThemeType } from "../constants";
 import "../styles/global.css";
+import { DarkTheme, LightTheme } from "../theme";
 
 const siteTitle = "Stableford Calculator";
 
 export default function App({ Component, pageProps }: AppProps) {
     const [themeCookie, updateCookie] = useCookie(ThemeCookie);
+    console.log(themeCookie);
     const isDarkTheme = themeCookie === ThemeType.Dark;
 
     useEffect(() => {
@@ -21,15 +23,9 @@ export default function App({ Component, pageProps }: AppProps) {
         }
     }, []);
 
-    const theme = useMemo(
-        () =>
-            createMuiTheme({
-                palette: {
-                    type: isDarkTheme ? "dark" : "light"
-                }
-            }),
-        [isDarkTheme]
-    );
+    const theme = useMemo(() => (isDarkTheme ? DarkTheme : LightTheme), [
+        isDarkTheme
+    ]);
 
     const onToggleTheme = () => {
         updateCookie(isDarkTheme ? ThemeType.Light : ThemeType.Dark);
