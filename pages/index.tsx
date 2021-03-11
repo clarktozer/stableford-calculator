@@ -2,7 +2,7 @@ import { Container, Grid, TextField, Typography } from "@material-ui/core";
 import React, { useState } from "react";
 import { HoleInput, TotalPoints } from "../components";
 import { BackNine, FrontNine, PointsState } from "../constants";
-import { useStyles } from "./style";
+import { useStyles } from "../styles/page";
 
 export default function Home() {
     const [totalPoints, setTotalPoints] = useState(PointsState);
