@@ -2,8 +2,8 @@ import { CssBaseline } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/core/styles";
 import { AppProps } from "next/app";
 import Head from "next/head";
-import React, { useEffect, useMemo } from "react";
-import { useCookie } from "react-use";
+import React, { useState } from "react";
+import { useCookie, useMount } from "react-use";
 import { Header } from "../components/Header";
 import { ThemeCookie, ThemeType } from "../constants";
 import "../styles/global.css";
@@ -13,19 +13,16 @@ const siteTitle = "Stableford Calculator";
 
 export default function App({ Component, pageProps }: AppProps) {
     const [themeCookie, updateCookie] = useCookie(ThemeCookie);
-    console.log(themeCookie);
+    const [isMounted, setMounted] = useState(false);
     const isDarkTheme = themeCookie === ThemeType.Dark;
 
-    useEffect(() => {
+    useMount(() => {
         const jssStyles = document.querySelector("#jss-server-side");
         if (jssStyles) {
             jssStyles.parentElement.removeChild(jssStyles);
         }
-    }, []);
-
-    const theme = useMemo(() => (isDarkTheme ? DarkTheme : LightTheme), [
-        isDarkTheme
-    ]);
+        setMounted(true);
+    });
 
     const onToggleTheme = () => {
         updateCookie(isDarkTheme ? ThemeType.Light : ThemeType.Dark);
@@ -40,13 +37,17 @@ export default function App({ Component, pageProps }: AppProps) {
                 />
                 <title>{siteTitle}</title>
             </Head>
-            <ThemeProvider theme={theme}>
+            <ThemeProvider theme={isDarkTheme ? DarkTheme : LightTheme}>
                 <CssBaseline />
-                <Header
-                    onToggleTheme={onToggleTheme}
-                    isDarkTheme={isDarkTheme}
-                />
-                <Component {...pageProps} />
+                {isMounted && (
+                    <>
+                        <Header
+                            onToggleTheme={onToggleTheme}
+                            isDarkTheme={isDarkTheme}
+                        />
+                        <Component {...pageProps} />
+                    </>
+                )}
             </ThemeProvider>
         </>
     );
