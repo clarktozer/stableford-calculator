@@ -1,4 +1,4 @@
 export interface TotalPointsProps {
-    value: number;
+    points: number;
     label: string;
 }

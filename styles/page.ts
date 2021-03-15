@@ -30,5 +30,11 @@ export const useStyles = makeStyles(theme => ({
         display: "flex",
         alignItems: "center",
         justifyContent: "flex-end"
+    },
+    subTotalLabel: {
+        marginRight: theme.spacing(1)
+    },
+    subTotalScore: {
+        marginRight: theme.spacing(1)
     }
 }));

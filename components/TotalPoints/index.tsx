@@ -3,7 +3,7 @@ import React, { FC } from "react";
 import { useStyles } from "./style";
 import { TotalPointsProps } from "./types";
 
-export const TotalPoints: FC<TotalPointsProps> = ({ value, label }) => {
+export const TotalPoints: FC<TotalPointsProps> = ({ points, label }) => {
     const classes = useStyles();
 
     return (
@@ -13,8 +13,8 @@ export const TotalPoints: FC<TotalPointsProps> = ({ value, label }) => {
             avatar={
                 <Chip
                     className={classes.points}
-                    color="primary"
-                    label={value}
+                    color="secondary"
+                    label={points}
                 />
             }
             variant="default"

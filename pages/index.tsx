@@ -1,14 +1,68 @@
-import { Container, Grid, TextField, Typography } from "@material-ui/core";
-import React, { useState } from "react";
+import {
+    Chip,
+    Container,
+    Grid,
+    TextField,
+    Typography
+} from "@material-ui/core";
+import classnames from "classnames";
+import React, { useMemo, useState } from "react";
 import { HoleInput, TotalPoints } from "../components";
 import { BackNine, FrontNine, PointsState } from "../constants";
 import { useStyles } from "../styles/page";
 
 export default function Home() {
-    const [totalPoints, setTotalPoints] = useState(PointsState);
-    const [handicap, setHandicap] = useState(36);
-    const halfway = Math.floor(totalPoints.length / 2);
     const classes = useStyles();
+    const [totals, setTotals] = useState(PointsState);
+    const halfway = Math.floor(totals.length / 2);
+    const [handicap, setHandicap] = useState(36);
+
+    const totalPoints = useMemo(
+        () => totals.reduce((total, current) => total + current.points, 0),
+        [totals]
+    );
+
+    const inPoints = useMemo(
+        () =>
+            totals.reduce(
+                (total, current, index) => {
+                    if (index < halfway) {
+                        return {
+                            points: total.points + current.points,
+                            score: total.score + current.score
+                        };
+                    }
+
+                    return total;
+                },
+                {
+                    points: 0,
+                    score: 0
+                }
+            ),
+        [totals]
+    );
+
+    const outPoints = useMemo(
+        () =>
+            totals.reduce(
+                (total, current, index) => {
+                    if (index >= halfway) {
+                        return {
+                            points: total.points + current.points,
+                            score: total.score + current.score
+                        };
+                    }
+
+                    return total;
+                },
+                {
+                    points: 0,
+                    score: 0
+                }
+            ),
+        [totals]
+    );
 
     const onChangeHandicap = (
         event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -20,16 +74,19 @@ export default function Home() {
         }
     };
 
-    const onHoleChanged = (hole: number, points: number) => {
+    const onHoleChanged = (hole: number, points: number, score: number) => {
         if (hole > 0) {
-            const newTotal = totalPoints.map((item, index) => {
+            const newTotal = totals.map((item, index) => {
                 if (index === hole - 1) {
-                    return points;
+                    return {
+                        points,
+                        score
+                    };
                 }
                 return item;
             });
 
-            setTotalPoints(newTotal);
+            setTotals(newTotal);
         }
     };
 
@@ -53,10 +110,7 @@ export default function Home() {
                         <div className={classes.grow}></div>
                         <TotalPoints
                             label="Total Points"
-                            value={totalPoints.reduce(
-                                (total, points) => total + points,
-                                0
-                            )}
+                            points={totalPoints}
                         />
                     </div>
                 </Grid>
@@ -73,18 +127,21 @@ export default function Home() {
                         />
                     ))}
                     <div className={classes.totalRow}>
-                        <TotalPoints
-                            label="In"
-                            value={totalPoints.reduce(
-                                (total, points, index) => {
-                                    if (index < halfway) {
-                                        return total + points;
-                                    }
-
-                                    return total;
-                                },
-                                0
+                        <span className={classes.subTotalLabel}>In</span>
+                        <Chip
+                            className={classnames(
+                                classes.total,
+                                classes.subTotalScore
                             )}
+                            color="primary"
+                            label={inPoints.score}
+                            size="small"
+                        />
+                        <Chip
+                            className={classes.total}
+                            color="secondary"
+                            label={inPoints.points}
+                            size="small"
                         />
                     </div>
                 </Grid>
@@ -101,18 +158,21 @@ export default function Home() {
                         />
                     ))}
                     <div className={classes.totalRow}>
-                        <TotalPoints
-                            label="Out"
-                            value={totalPoints.reduce(
-                                (total, points, index) => {
-                                    if (index >= halfway) {
-                                        return total + points;
-                                    }
-
-                                    return total;
-                                },
-                                0
+                        <span className={classes.subTotalLabel}>Out</span>
+                        <Chip
+                            className={classnames(
+                                classes.total,
+                                classes.subTotalScore
                             )}
+                            color="primary"
+                            label={outPoints.score}
+                            size="small"
+                        />
+                        <Chip
+                            className={classes.total}
+                            color="secondary"
+                            label={outPoints.points}
+                            size="small"
                         />
                     </div>
                 </Grid>

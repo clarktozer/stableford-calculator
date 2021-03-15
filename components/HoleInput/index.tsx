@@ -40,7 +40,7 @@ export const HoleInput: FC<HoleInputProps> = ({ onChange, hole, handicap }) => {
         }
 
         setPoints(value);
-        onChange(hole, value);
+        onChange(hole, value, Number(score));
     }, [input, hole, handicap, setPoints]);
 
     return (
