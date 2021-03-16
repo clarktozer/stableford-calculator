@@ -5,13 +5,13 @@ import { useStyles } from "./style";
 import { HoleDefinition, HoleInputProps } from "./types";
 
 export const HoleInput: FC<HoleInputProps> = ({ onChange, hole, handicap }) => {
+    const classes = useStyles();
     const [points, setPoints] = useState(0);
     const [input, setInput] = useState<HoleDefinition>({
         par: "",
         score: "",
         stroke: ""
     });
-    const classes = useStyles();
 
     const onChangeInput = (
         event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>

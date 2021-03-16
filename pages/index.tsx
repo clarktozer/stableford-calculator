@@ -6,63 +6,20 @@ import {
     Typography
 } from "@material-ui/core";
 import classnames from "classnames";
-import React, { useMemo, useState } from "react";
+import React, { useReducer } from "react";
 import { HoleInput, TotalPoints } from "../components";
-import { BackNine, FrontNine, PointsState } from "../constants";
+import { BackNine, FrontNine } from "../constants";
+import appReducer, {
+    appState,
+    updateHandicap,
+    updateHole
+} from "../state/reducer";
 import { useStyles } from "../styles/page";
 
 export default function Home() {
     const classes = useStyles();
-    const [totals, setTotals] = useState(PointsState);
-    const halfway = Math.floor(totals.length / 2);
-    const [handicap, setHandicap] = useState(36);
-
-    const totalPoints = useMemo(
-        () => totals.reduce((total, current) => total + current.points, 0),
-        [totals]
-    );
-
-    const inPoints = useMemo(
-        () =>
-            totals.reduce(
-                (total, current, index) => {
-                    if (index < halfway) {
-                        return {
-                            points: total.points + current.points,
-                            score: total.score + current.score
-                        };
-                    }
-
-                    return total;
-                },
-                {
-                    points: 0,
-                    score: 0
-                }
-            ),
-        [totals]
-    );
-
-    const outPoints = useMemo(
-        () =>
-            totals.reduce(
-                (total, current, index) => {
-                    if (index >= halfway) {
-                        return {
-                            points: total.points + current.points,
-                            score: total.score + current.score
-                        };
-                    }
-
-                    return total;
-                },
-                {
-                    points: 0,
-                    score: 0
-                }
-            ),
-        [totals]
-    );
+    const [state, dispatch] = useReducer(appReducer, appState);
+    const { handicap, totals } = state;
 
     const onChangeHandicap = (
         event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -70,23 +27,19 @@ export default function Home() {
         const value = parseInt(event.target.value);
 
         if (!isNaN(value)) {
-            setHandicap(value);
+            dispatch(updateHandicap(value));
         }
     };
 
     const onHoleChanged = (hole: number, points: number, score: number) => {
         if (hole > 0) {
-            const newTotal = totals.map((item, index) => {
-                if (index === hole - 1) {
-                    return {
-                        points,
-                        score
-                    };
-                }
-                return item;
-            });
-
-            setTotals(newTotal);
+            dispatch(
+                updateHole({
+                    number: hole,
+                    points,
+                    score
+                })
+            );
         }
     };
 
@@ -110,7 +63,7 @@ export default function Home() {
                         <div className={classes.grow}></div>
                         <TotalPoints
                             label="Total Points"
-                            points={totalPoints}
+                            points={totals.front.points + totals.back.points}
                         />
                     </div>
                 </Grid>
@@ -134,13 +87,13 @@ export default function Home() {
                                 classes.subTotalScore
                             )}
                             color="primary"
-                            label={inPoints.score}
+                            label={totals.front.score}
                             size="small"
                         />
                         <Chip
                             className={classes.total}
                             color="secondary"
-                            label={inPoints.points}
+                            label={totals.front.points}
                             size="small"
                         />
                     </div>
@@ -165,13 +118,13 @@ export default function Home() {
                                 classes.subTotalScore
                             )}
                             color="primary"
-                            label={outPoints.score}
+                            label={totals.back.score}
                             size="small"
                         />
                         <Chip
                             className={classes.total}
                             color="secondary"
-                            label={outPoints.points}
+                            label={totals.back.points}
                             size="small"
                         />
                     </div>
